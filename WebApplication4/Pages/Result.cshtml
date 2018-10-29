@@ -1,0 +1,343 @@
+﻿@page
+@model IndexModel
+@*@{
+        ViewData["Title"] = "Home page";
+    }*@
+
+<div>
+    <div class="row" style="min-height:567px;">
+        <div class="col-md-3">
+            <div class="list-group">
+
+                <a href="#" class="list-group-item waves-effect waves-block waves-classic" style="font-weight: bold; background-color: #eaeded; color: #990012; ">DIMENSIONS</a>
+                <a onclick="plotGraph('incident_city');" href="#!" class="list-group-item waves-effect waves-block waves-classic" data-bind="click: $root.reload">
+                    <span id="asubject" data-id=""> INCIDENT CITY</span>
+                    <span style="float: right;"></span>
+                </a>
+                <a onclick="plotGraph('policy_state');" href="#!" class="list-group-item waves-effect waves-block waves-classic" data-bind="click: $root.reload">
+                    <span id="asubject" data-id=""> POLICY STATE</span>
+                    <span style="float: right;"></span>
+                </a>
+                <a onclick="plotGraph('policy_deductable');" href="#!" class="list-group-item waves-effect waves-block waves-classic" data-bind="click: $root.reload">
+                    <span id="asubject" data-id=""> DEDUCTABLE</span>
+                    <span style="float: right;"></span>
+                </a>
+                <a onclick="plotGraph('policy_annual_premium');" href="#!" class="list-group-item waves-effect waves-block waves-classic" data-bind="click: $root.reload">
+                    <span id="asubject" data-id=""> POLICY ANNUAL PREMIUM</span>
+                    <span style="float: right;"></span>
+                </a>
+                <a onclick="plotGraph('insured_sex');" href="#!" class="list-group-item waves-effect waves-block waves-classic" data-bind="click: $root.reload">
+                    <span id="asubject" data-id=""> INSURED SEX</span>
+                    <span style="float: right;"></span>
+                </a>
+                <a onclick="plotGraph('insured_education_level');" href="#!" class="list-group-item waves-effect waves-block waves-classic" data-bind="click: $root.reload">
+                    <span id="asubject" data-id=""> INSURED EDUCATION LEVEL</span>
+                    <span style="float: right;"></span>
+                </a>
+                <a onclick="plotGraph('incident_type');" href="#!" class="list-group-item waves-effect waves-block waves-classic" data-bind="click: $root.reload">
+                    <span id="asubject" data-id=""> INCIDENT TYPE</span>
+                    <span style="float: right;"></span>
+                </a>
+                <a onclick="plotGraph('incident_severity');" href="#!" class="list-group-item waves-effect waves-block waves-classic" data-bind="click: $root.reload">
+                    <span id="asubject" data-id=""> INCIDENT SEVERITY</span>
+                    <span style="float: right;"></span>
+                </a>
+                <a onclick="plotGraph('age');" href="#!" class="list-group-item waves-effect waves-block waves-classic" data-bind="click: $root.reload">
+                    <span id="asubject" data-id=""> AGE</span>
+                    <span style="float: right;"></span>
+                </a>
+
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="btn-group" role="group" aria-label="Second group">
+                <button onclick="chartType = 'v'; plotGraph('selected');" type="button" class="btn btn-primary">Vertical Bar</button>
+                <img src="~/images/vertical.png" alt="vertical bar" />
+                <button onclick="chartType = 'h'; plotGraph('selected');" type="button" class="btn btn-success">Horizontal Bar</button>
+                <img src="~/images/bar.png" alt="horizontal bar" />
+                <button onclick="chartType = 'p'; plotGraph('selected');" type="button" class="btn btn-danger">Pie Chart</button>
+                <img src="~/images/pie.png" alt="pie chart" />
+            </div>
+
+            <div id="chart">
+                <div class="get-started-container" id="chartStart">
+                    <h3 class="get-started-title">Select data or a chart type to get started</h3>
+                    <p class="get-started-description">There are two ways to get started. Select a chart type to see recommended dimensions and measures or select a dimension or measure to see recommended chart types.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+
+        <table id="example" class="table table-hover dataTable table-striped width-full">
+            <thead>
+                <tr>
+
+                    <th> policy state </th>
+                    <th> policy deductable </th>
+                    <th> policy annual premium </th>
+                    <th> insured sex </th>
+                    <th> insured education level </th>
+                    <th> incident date </th>
+                    <th> incident type </th>
+                    <th> incident severity </th>
+                    <th> incident state </th>
+                    <th> incident city </th>
+                    <th> total claim amount </th>
+                    <th> injury claim </th>
+                    <th> property claim </th>
+                    <th> vehicle claim </th>
+                    <th> auto make </th>
+                    <th> auto model </th>
+                    <th> auto year </th>
+                    <th> age </th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+
+</div>
+
+
+@section Scripts{
+
+    <script src="http://neue.cc/linq.min.js"></script>
+    <script type="text/javascript">
+        var chartType = 'v';
+        var jsondata2 = [];
+        var defaultColumn = 'incident_city';
+
+        function plotGraph(x1) {
+            $("#chartStart").hide();
+
+            if (x1 == 'selected')
+                x1 = defaultColumn;
+            else
+                defaultColumn = x1;
+
+            //linq.GroupBy(function (x) { return x.Phase; })
+            //    .Select(function (x) { return { Phase: x.Key(), Value: x.Sum(function (y) { return y.Value | 0; }) }; })
+            switch (x1) {
+                case 'age':
+                    var linq = Enumerable.From(jsondata);
+                    jsondata2 = linq.GroupBy(function (x) { return x.age; })
+                        .Select(function (x) { return { age: x.Key(), total_claim_amount: x.Sum(function (y) { return y.total_claim_amount | 0; }) }; })
+                        .ToArray();
+                    break;
+
+                case 'incident_city':
+                    var linq = Enumerable.From(jsondata);
+                    jsondata2 = linq.GroupBy(function (x) { return x.incident_city; })
+                        .Select(function (x) { return { incident_city: x.Key(), total_claim_amount: x.Sum(function (y) { return y.total_claim_amount | 0; }) }; })
+                        .ToArray();
+                    break;
+
+                case 'policy_state':
+                    var linq = Enumerable.From(jsondata);
+                    jsondata2 = linq.GroupBy(function (x) { return x.policy_state; })
+                        .Select(function (x) { return { policy_state: x.Key(), total_claim_amount: x.Sum(function (y) { return y.total_claim_amount | 0; }) }; })
+                        .ToArray();
+                    break;
+
+                case 'policy_deductable':
+                    var linq = Enumerable.From(jsondata);
+                    jsondata2 = linq.GroupBy(function (x) { return x.policy_deductable; })
+                        .Select(function (x) { return { policy_deductable: x.Key(), total_claim_amount: x.Sum(function (y) { return y.total_claim_amount | 0; }) }; })
+                        .ToArray();
+                    break;
+
+                case 'policy_annual_premium':
+                    var linq = Enumerable.From(jsondata);
+                    jsondata2 = linq.GroupBy(function (x) { return x.policy_annual_premium; })
+                        .Select(function (x) { return { policy_annual_premium: x.Key(), total_claim_amount: x.Sum(function (y) { return y.total_claim_amount | 0; }) }; })
+                        .ToArray();
+                    break;
+
+                case 'insured_sex':
+                    var linq = Enumerable.From(jsondata);
+                    jsondata2 = linq.GroupBy(function (x) { return x.insured_sex; })
+                        .Select(function (x) { return { insured_sex: x.Key(), total_claim_amount: x.Sum(function (y) { return y.total_claim_amount | 0; }) }; })
+                        .ToArray();
+                    break;
+
+                case 'insured_education_level':
+                    var linq = Enumerable.From(jsondata);
+                    jsondata2 = linq.GroupBy(function (x) { return x.insured_education_level; })
+                        .Select(function (x) { return { insured_education_level: x.Key(), total_claim_amount: x.Sum(function (y) { return y.total_claim_amount | 0; }) }; })
+                        .ToArray();
+                    break;
+
+
+                case 'incident_type':
+                    var linq = Enumerable.From(jsondata);
+                    jsondata2 = linq.GroupBy(function (x) { return x.incident_type; })
+                        .Select(function (x) { return { incident_type: x.Key(), total_claim_amount: x.Sum(function (y) { return y.total_claim_amount | 0; }) }; })
+                        .ToArray();
+                    break;
+
+                case 'incident_severity':
+                    var linq = Enumerable.From(jsondata);
+                    jsondata2 = linq.GroupBy(function (x) { return x.incident_severity; })
+                        .Select(function (x) { return { incident_severity: x.Key(), total_claim_amount: x.Sum(function (y) { return y.total_claim_amount | 0; }) }; })
+                        .ToArray();
+                    break;
+
+
+            }
+
+            if ($("#chart").data("igPieChart") != null) {
+                $("#chart").igPieChart("destroy");
+            }
+
+
+            if ($("#chart").data("igCategoryChart") != null) {
+                $("#chart").igCategoryChart("destroy");
+            }
+
+
+            if ($("#chart").data("igDataChart") != null) {
+                $("#chart").igDataChart("destroy");
+            }
+
+
+            if (chartType == 'h') {
+
+                
+                $("#chart").igDataChart({
+                    width: "98%",
+                    height: "550px",
+                    dataSource: jsondata2,
+                    //title: "Energy Production Per Country",
+                    //subtitle: "The top five Total Primary Energy producers",
+                    axes: [{
+                        name: "xAxis",
+                        type: "numericX",
+                        title: x1
+                    }, {
+                        name: "yAxis",
+                        type: "categoryY",
+                            label: "total_claim_amount"
+                    }],
+                    series: [{
+                        name: "series1",
+                        title: "Canada",
+                        type: "bar",
+                        isHighlightingEnabled: true,
+                        isTransitionInEnabled: true,
+                        xAxis: "xAxis",
+                        yAxis: "yAxis",
+                        valueMemberPath: x1
+                    }]
+                });
+            }
+            
+
+
+            if (chartType == 'v') {
+
+            
+                console.log(chartType);
+                $("#chart").igCategoryChart({
+                    width: "435px",
+                    height: "435px",
+                    chartType: 'bar',
+                    dataSource: jsondata2,
+                    //legend: { element: "theLegend" }
+                })
+            }
+            if (chartType == 'p') {
+
+                if ($("#chart").data("igPieChart") != null) {
+                    $("#chart").igPieChart("destroy");
+                }
+
+                //jsondata2.length = 0;
+
+                $("#chart").igPieChart({
+                    width: "435px",
+                    height: "435px",
+                    dataSource: jsondata2, //JSON data defined above
+                    valueMemberPath: "total_claim_amount",
+                    labelMemberPath: x1,
+                    labelsPosition: "bestFit"
+                });
+            }
+            
+
+         
+
+        }
+
+        function ClearChart() {
+
+            var dataSource2 = $("#chart").igDataChart("option", "dataSource");
+
+            var data2 = dataSource2.data();
+
+            for (i = 0; i < currData.length; i++) {
+
+                var oldItem = data2[i];
+
+                $("#chart").igDataChart("notifyRemoveItem", currData, i, oldItem);
+
+            }
+
+        }
+
+        $(function () {
+            console.log(jsondata);
+            $(document).ready(function () {
+
+               
+                //alert(JSON.stringify(jsondata));
+
+            });
+
+            var testsTable = $('#example').dataTable({
+                bJQueryUI: true,
+                aaData: jsondata,
+                width: '1000px',
+                aoColumns: [
+                    { mData: 'policy_state' },
+                    { mData: 'policy_deductable' },
+                    { mData: 'policy_annual_premium' },
+                    { mData: 'insured_sex' },
+                    { mData: 'insured_education_level' },
+                    { mData: 'incident_date' },
+                    { mData: 'incident_type' },
+                    { mData: 'incident_severity' },
+                    { mData: 'incident_state' },
+                    { mData: 'incident_city' },
+                    { mData: 'total_claim_amount' },
+                    { mData: 'injury_claim' },
+                    { mData: 'property_claim' },
+                    { mData: 'vehicle_claim' },
+                    { mData: 'auto_make' },
+                    { mData: 'auto_model' },
+                    { mData: 'auto_year' },
+                    { mData: 'age' }
+
+                ]
+            });
+
+
+            //var jsondata = [
+            //    { "CountryName": "China", "Pop1990": 1141, "Pop2008": 1333, "Pop2025": 1458 },
+            //    { "CountryName": "India", "Pop1990": 849, "Pop2008": 1140, "Pop2025": 1398 },
+            //    { "CountryName": "United States", "Pop1990": 250, "Pop2008": 304, "Pop2025": 352 },
+            //    { "CountryName": "Indonesia", "Pop1990": 178, "Pop2008": 228, "Pop2025": 273 },
+            //    { "CountryName": "Brazil", "Pop1990": 150, "Pop2008": 192, "Pop2025": 223 }
+            //];
+
+
+
+
+        });
+
+
+    </script>
+}
+

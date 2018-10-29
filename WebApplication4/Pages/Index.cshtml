@@ -1,0 +1,166 @@
+﻿@page
+@model IndexModel
+
+@*@{
+    ViewData["Title"] = "Home page";
+}*@
+
+<div>
+    <div class="panel">
+        <div class="panel-heading">
+            <h3> GSFS Open Data</h3>
+        </div>
+        <hr />
+        <div class="panel-body">
+
+            <table id="example" class="table table-hover dataTable table-striped width-full">
+                <thead>
+                    <tr>
+                        <th> policy state </th>
+                        <th> policy deductable </th>
+                        <th> policy annual premium </th>
+                        <th> insured sex </th>
+                        <th> insured education level </th>
+                        <th> incident date </th>
+                        <th> incident type </th>
+                        <th> incident severity </th>
+                        <th> incident state </th>
+                        <th> incident city </th>
+                        <th> total claim amount </th>
+                        <th> injury claim </th>
+                        <th> property claim </th>
+                        <th> vehicle claim </th>
+                        <th> auto make </th>
+                        <th> auto model </th>
+                        <th> auto year </th>
+                        <th> age </th>
+                    </tr>
+                </thead>
+            </table>
+
+        </div>
+    </div>
+    
+    <div id="chart"></div>
+
+</div>
+
+
+@section Scripts{
+<script type="text/javascript">
+    $(document).ready(function () {
+        //var jsonData = [{ "Name": "Name one", "Address": "Address one", "City": "City one" }, { "Name": "Name2", "Address": "Address2", "City": "City2" }, { "Name": "Name Three", "Address": "Address Three", "City": "Newyork" }, { "Name": "1", "Address": "name1", "City": "City Three" }];
+       
+    });
+
+
+    $(function () {
+
+        //var jsondata = [
+        //    { "CountryName": "China", "Pop1990": 1141, "Pop2008": 1333, "Pop2025": 1458 },
+        //    { "CountryName": "India", "Pop1990": 849, "Pop2008": 1140, "Pop2025": 1398 },
+        //    { "CountryName": "United States", "Pop1990": 250, "Pop2008": 304, "Pop2025": 352 },
+        //    { "CountryName": "Indonesia", "Pop1990": 178, "Pop2008": 228, "Pop2025": 273 },
+        //    { "CountryName": "Brazil", "Pop1990": 150, "Pop2008": 192, "Pop2025": 223 }
+        //];
+
+        function bind_dataTable(id, data) {
+
+            $(id).dataTable().fnDestroy();
+            $(id + ' tbody').html(data);
+
+            var tablet1 = $(id).dataTable({
+                responsive: true,
+                language: {
+                    searchPlaceholder: "Search..",
+                    search: "",
+                    oPaginate:
+                        {
+                            "sNext": '>',
+                            "sLast": '>>',
+                            "sFirst": '<<',
+                            "sPrevious": '<'
+                        }
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'print'
+                    ,
+                    {
+                        extend: 'pdf',
+                        text: 'PDF',
+                        extension: '.pdf',
+                        exportOptions: {
+                            modifier: {
+                                page: 'All'
+                            }
+                        },
+                        title: 'Books'
+                    }
+                ],
+                //bLength: "",
+                //sDom: "t", // just show table, no other controls
+                bPaginate: true,
+                bAutoWidth: false,
+                bFilter: true,
+                bInfo: true
+            });
+
+
+
+            //    tablet1.columns().iterator('column', function (ctx, idx) {
+            //        $(table.column(idx).header()).append('<span class="sort-icon"/>');
+            //    });
+        }
+
+
+
+        //bind_dataTable('#example', jsondata);
+        var testsTable = $('#example').dataTable({
+            bJQueryUI: true,
+            aaData: jsondata,
+            width:'1000px',
+            aoColumns: [
+                { mData: 'policy_state' },
+                { mData: 'policy_deductable' },
+                { mData: 'policy_annual_premium' },
+                { mData: 'insured_sex' },
+                { mData: 'insured_education_level' },
+                { mData: 'incident_date' },
+                { mData: 'incident_type' },
+                { mData: 'incident_severity' },
+                { mData: 'incident_state' },
+                { mData: 'incident_city' },
+                { mData: 'total_claim_amount' },
+                { mData: 'injury_claim' },
+                { mData: 'property_claim' },
+                { mData: 'vehicle_claim' },
+                { mData: 'auto_make' },
+                { mData: 'auto_model' },
+                { mData: 'auto_year' },
+                { mData: 'age' }
+                
+            ]
+        });
+
+
+
+        //$("#chart").igPieChart({
+        //    width: "435px",
+        //    height: "435px",
+        //    dataSource: data, //JSON data defined above
+        //    valueMemberPath: "Pop2008",
+        //    labelMemberPath: "CountryName",
+        //    labelsPosition: "bestFit"
+        //});
+
+
+
+
+    });
+
+
+</script>
+}
+
+    
